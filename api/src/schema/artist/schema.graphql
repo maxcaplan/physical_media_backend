@@ -1,8 +1,8 @@
-type Query {
+extend type Query {
   artist: [Artist!]!
 }
 
-type Mutation {
+extend type Mutation {
   addArtist(input: ArtistInput!): ArtistMutationResponse
   updateArtist(id: ID!, input: ArtistInput!): ArtistMutationResponse
   deleteArtist(id: ID!): ArtistMutationResponse

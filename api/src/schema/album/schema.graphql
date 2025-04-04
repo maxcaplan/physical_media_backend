@@ -1,9 +1,9 @@
-type Query {
+extend type Query {
   wishlistAlbums: [WishlistAlbum!]!
   ownedAlbums: [OwnedAlbum!]!
 }
 
-type Mutation {
+extend type Mutation {
   addWishlistAlbum(
     input: AlbumInput!
     artistIds: [ID!]!

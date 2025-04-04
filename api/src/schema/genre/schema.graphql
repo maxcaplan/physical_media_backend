@@ -1,8 +1,8 @@
-type Query {
+extend type Query {
   genres: [Genre!]!
 }
 
-type Mutation {
+extend type Mutation {
   addGenre(input: GenreInput!): GenreMutationResponse
   updateGenre(id: ID!, input: GenreInput!): GenreMutationResponse
   deleteGenre(id: ID!): GenreMutationResponse

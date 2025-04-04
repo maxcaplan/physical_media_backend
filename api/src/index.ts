@@ -1,6 +1,8 @@
 import { createSchema, createYoga } from 'graphql-yoga'
 
-import { type_defs as typeDefs } from './schema/typedefs'
+import { typeDefs } from './schema/typeDefs.generated'
+import { resolvers } from './schema/resolvers.generated'
+
 import { PostgresConnector } from './connectors/postgres_connector'
 
 const connector = new PostgresConnector({})
@@ -8,8 +10,10 @@ await connector.connect()
 
 const yoga = createYoga({
 	schema: createSchema({
-		typeDefs
-	})
+		typeDefs,
+		resolvers
+	}),
+	landingPage: false
 })
 
 const server = Bun.serve({
