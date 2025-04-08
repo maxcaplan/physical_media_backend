@@ -1,25 +1,29 @@
 extend type Query {
-  genres: [Genre!]!
+  genre(id: Int!, options: QueryGenreOptions): Genre
+  genres(options: QueryGenreOptions): [Genre!]!
+}
+
+input QueryGenreOptions {
+  with_albums: Boolean
 }
 
 extend type Mutation {
-  addGenre(input: GenreInput!): GenreMutationResponse
-  updateGenre(id: ID!, input: GenreInput!): GenreMutationResponse
-  deleteGenre(id: ID!): GenreMutationResponse
+  add_genre(input: AddGenreInput!): Genre!
+  update_genre(input: UpdateGenreInput!): Genre
+  delete_genre(id: Int!): Genre
 }
 
-type GenreMutationResponse implements MutationResponse {
-  code: Int!
-  success: Boolean!
-  message: String
-  genre: Genre
-}
-
-input GenreInput {
+input AddGenreInput {
   name: String!
+}
+
+input UpdateGenreInput {
+  id: Int!
+  name: String
 }
 
 type Genre {
-  id: ID!
+  id: Int!
   name: String!
+  albums: [Album!]
 }

@@ -1,29 +1,36 @@
 extend type Query {
-  artist: [Artist!]!
+  artist(id: Int!, options: QueryArtistOptions): Artist
+  artists(with_albums: Boolean): [Artist!]!
+}
+
+input QueryArtistOptions {
+  with_albums: Boolean
 }
 
 extend type Mutation {
-  addArtist(input: ArtistInput!): ArtistMutationResponse
-  updateArtist(id: ID!, input: ArtistInput!): ArtistMutationResponse
-  deleteArtist(id: ID!): ArtistMutationResponse
+  add_artist(input: AddArtistInput!): Artist!
+  update_artist(input: UpdateArtistInput!): Artist
+  delete_artist(id: Int!): Artist
 }
 
-type ArtistMutationResponse implements MutationResponse {
-  code: Int!
-  success: Boolean!
-  message: String
-  artist: Artist
+input AddArtistInput {
+  name: String!
+  description: String
+  origin: String
 }
 
-input ArtistInput {
+input UpdateArtistInput {
+  id: Int!
   name: String
   description: String
   origin: String
 }
 
 type Artist {
-  id: ID!
+  id: Int!
   name: String!
   description: String
   origin: String
+  albums: [Album!]
 }
+

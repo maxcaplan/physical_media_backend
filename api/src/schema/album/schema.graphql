@@ -1,108 +1,106 @@
 extend type Query {
-  wishlistAlbums: [WishlistAlbum!]!
-  ownedAlbums: [OwnedAlbum!]!
+  wishlist_album(id: Int!, options: QueryAlbumOptions): WishlistAlbum
+  wishlist_albums(options: QueryAlbumOptions): [WishlistAlbum!]!
+  owned_album(id: Int!, options: QueryAlbumOptions): OwnedAlbum
+  owned_albums(options: QueryAlbumOptions): [OwnedAlbum!]!
+}
+
+input QueryAlbumOptions {
+  with_artists: Boolean
+  with_genres: Boolean
+  with_producers: Boolean
+  with_labels: Boolean
 }
 
 extend type Mutation {
-  addWishlistAlbum(
-    input: AlbumInput!
-    artistIds: [ID!]!
-    labels: [String!]!
-    producers: [String!]!
-    genres: [ID!]!
-    tracks: [TrackInput!]!
-    listings: [String!]!
+  add_wishlist_album(
+    input: AddAlbumInput!
+    listings: [String!]
     ranking: Int
-  ): WishlistAlbumMutationResponse
+  ): WishlistAlbum!
 
-  updateWishlistAlbum(
-    id: ID!
-    input: AlbumInput!
-    artistIds: [ID!]!
-    labels: [String!]!
-    producers: [String!]!
-    genres: [ID!]!
-    tracks: [TrackInput!]!
-    listings: [String!]!
+  update_wishlist_album(
+    input: UpdateAlbumInput!
+    listings: [String!]
     ranking: Int
-  ): WishlistAlbumMutationResponse
-  deleteWishlistAlbum(id: ID!): WishlistAlbumMutationResponse
+  ): WishlistAlbum
 
-  addOwnedAlbum(
-    input: AlbumInput!
-    artistIds: [ID!]!
-    labels: [String!]!
-    producers: [String!]!
-    genres: [ID!]!
-    tracks: [TrackInput!]!
+  delete_wishlist_album(id: Int!): WishlistAlbum
+
+  add_owned_album(
+    input: AddAlbumInput!
     condition: Condition
-  ): OwnedAlbumMutationResponse
+  ): OwnedAlbum!
   
-  updateOwnedAlbum(
-    id: ID!
-    input: AlbumInput!
-    artistIds: [ID!]!
-    labels: [String!]!
-    producers: [String!]!
-    genres: [ID!]!
-    tracks: [TrackInput!]!
+  update_owned_album(
+    input: UpdateAlbumInput!
     condition: Condition
-  ): OwnedAlbumMutationResponse
+  ): OwnedAlbum
 
-  deleteOwnedAlbum(id: ID!): OwnedAlbumMutationResponse
+  delete_owned_album(id: Int!): OwnedAlbum
 }
 
-type WishlistAlbumMutationResponse implements MutationResponse {
-  code: Int!
-  success: Boolean!
-  message: String
-  wishlistAlbum: WishlistAlbum
-}
-
-type OwnedAlbumMutationResponse implements MutationResponse {
-  code: Int!
-  success: Boolean!
-  message: String
-  ownedAlbum: OwnedAlbum
-}
-
-input AlbumInput {
-  name: String
+input AddAlbumInput {
+  name: String!
   description: String
-  releaseYear: String
+  release_data: String
+  artist_ids: [Int!]
+  label_ids: [Int!]
+  producer_ids: [Int!]
+  genre_ids: [Int!]
+  tracks: [AddTrackInput!]
   length: Int
 }
 
-input TrackInput {
+input UpdateAlbumInput {
+  id: Int!
+  name: String
+  description: String
+  release_data: String
+  artist_ids: [Int!]
+  label_ids: [Int!]
+  producer_ids: [Int!]
+  genre_ids: [Int!]
+  tracks: [UpdateTrackInput!]
+  length: Int
+}
+
+input AddTrackInput {
   name: String!
   length: Int
   side: Int
 }
 
+input UpdateTrackInput {
+  name: String
+  length: Int
+  side: Int
+}
+
 type WishlistAlbum {
-  id: ID!
+  id: Int!
   album: Album
-  listings: [String!]!
+  listings: [String!]
   ranking: Int
 }
 
 type OwnedAlbum {
-  id: ID!
+  id: Int!
   album: Album
   condition: Condition
 }
 
 type Album {
-  id: ID!
+  id: Int!
   name: String!
   description: String
-  releaseYear: String
-  artistIds: [ID!]!
-  labels: [String!]!
-  producers: [String!]!
-  genres: [ID!]!
+  release_date: String
+  artists: [Artist!]
+  labels: [Label!]
+  producers: [Producer!]
+  genres: [Genre!]
   length: Int
-  tracks: [Track!]!
+  tracks: [Track!]
 }
 
 type Track {

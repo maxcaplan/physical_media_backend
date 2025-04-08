@@ -1,0 +1,29 @@
+extend type Query {
+  label(id: Int!, options: QueryLabelOptions): Label
+  labels(options: QueryLabelOptions): [Label!]!
+}
+
+input QueryLabelOptions {
+  with_albums: Boolean
+}
+
+extend type Mutation {
+  add_label(input: AddLabelInput!): Label!
+  update_label(input: UpdateLabelInput!): Label
+  delete_label(id: Int!): Label
+}
+
+input AddLabelInput {
+  name: String!
+}
+
+input UpdateLabelInput {
+  id: Int!
+  name: String
+}
+
+type Label {
+  id: Int!
+  name: String!
+  albums: [Album!]
+}

@@ -1,41 +1,58 @@
-type Album {
-  artistIds: [ID!]!
+input AddAlbumInput {
+  artist_ids: [Int!]
   description: String
-  genres: [ID!]!
-  id: ID!
-  labels: [String!]!
+  genre_ids: [Int!]
+  label_ids: [Int!]
   length: Int
   name: String!
-  producers: [String!]!
-  releaseYear: String
-  tracks: [Track!]!
+  producer_ids: [Int!]
+  release_data: String
+  tracks: [AddTrackInput!]
 }
 
-input AlbumInput {
+input AddArtistInput {
   description: String
+  name: String!
+  origin: String
+}
+
+input AddGenreInput {
+  name: String!
+}
+
+input AddLabelInput {
+  name: String!
+}
+
+input AddProducerInput {
+  name: String!
+}
+
+input AddTrackInput {
   length: Int
-  name: String
-  releaseYear: String
+  name: String!
+  side: Int
+}
+
+type Album {
+  artists: [Artist!]
+  description: String
+  genres: [Genre!]
+  id: Int!
+  labels: [Label!]
+  length: Int
+  name: String!
+  producers: [Producer!]
+  release_date: String
+  tracks: [Track!]
 }
 
 type Artist {
+  albums: [Album!]
   description: String
-  id: ID!
+  id: Int!
   name: String!
   origin: String
-}
-
-input ArtistInput {
-  description: String
-  name: String
-  origin: String
-}
-
-type ArtistMutationResponse implements MutationResponse {
-  artist: Artist
-  code: Int!
-  message: String
-  success: Boolean!
 }
 
 enum Condition {
@@ -48,60 +65,86 @@ enum Condition {
 }
 
 type Genre {
-  id: ID!
+  albums: [Album!]
+  id: Int!
   name: String!
 }
 
-input GenreInput {
+type Label {
+  albums: [Album!]
+  id: Int!
   name: String!
-}
-
-type GenreMutationResponse implements MutationResponse {
-  code: Int!
-  genre: Genre
-  message: String
-  success: Boolean!
 }
 
 type Mutation {
-  addArtist(input: ArtistInput!): ArtistMutationResponse
-  addGenre(input: GenreInput!): GenreMutationResponse
-  addOwnedAlbum(artistIds: [ID!]!, condition: Condition, genres: [ID!]!, input: AlbumInput!, labels: [String!]!, producers: [String!]!, tracks: [TrackInput!]!): OwnedAlbumMutationResponse
-  addWishlistAlbum(artistIds: [ID!]!, genres: [ID!]!, input: AlbumInput!, labels: [String!]!, listings: [String!]!, producers: [String!]!, ranking: Int, tracks: [TrackInput!]!): WishlistAlbumMutationResponse
-  deleteArtist(id: ID!): ArtistMutationResponse
-  deleteGenre(id: ID!): GenreMutationResponse
-  deleteOwnedAlbum(id: ID!): OwnedAlbumMutationResponse
-  deleteWishlistAlbum(id: ID!): WishlistAlbumMutationResponse
-  updateArtist(id: ID!, input: ArtistInput!): ArtistMutationResponse
-  updateGenre(id: ID!, input: GenreInput!): GenreMutationResponse
-  updateOwnedAlbum(artistIds: [ID!]!, condition: Condition, genres: [ID!]!, id: ID!, input: AlbumInput!, labels: [String!]!, producers: [String!]!, tracks: [TrackInput!]!): OwnedAlbumMutationResponse
-  updateWishlistAlbum(artistIds: [ID!]!, genres: [ID!]!, id: ID!, input: AlbumInput!, labels: [String!]!, listings: [String!]!, producers: [String!]!, ranking: Int, tracks: [TrackInput!]!): WishlistAlbumMutationResponse
-}
-
-interface MutationResponse {
-  code: Int!
-  message: String
-  success: Boolean!
+  add_artist(input: AddArtistInput!): Artist!
+  add_genre(input: AddGenreInput!): Genre!
+  add_label(input: AddLabelInput!): Label!
+  add_owned_album(condition: Condition, input: AddAlbumInput!): OwnedAlbum!
+  add_producer(input: AddProducerInput!): Producer!
+  add_wishlist_album(input: AddAlbumInput!, listings: [String!], ranking: Int): WishlistAlbum!
+  delete_artist(id: Int!): Artist
+  delete_genre(id: Int!): Genre
+  delete_label(id: Int!): Label
+  delete_owned_album(id: Int!): OwnedAlbum
+  delete_producer(id: Int!): Producer
+  delete_wishlist_album(id: Int!): WishlistAlbum
+  update_artist(input: UpdateArtistInput!): Artist
+  update_genre(input: UpdateGenreInput!): Genre
+  update_label(input: UpdateLabelInput!): Label
+  update_owned_album(condition: Condition, input: UpdateAlbumInput!): OwnedAlbum
+  update_producer(input: UpdateProducerInput!): Producer
+  update_wishlist_album(input: UpdateAlbumInput!, listings: [String!], ranking: Int): WishlistAlbum
 }
 
 type OwnedAlbum {
   album: Album
   condition: Condition
-  id: ID!
+  id: Int!
 }
 
-type OwnedAlbumMutationResponse implements MutationResponse {
-  code: Int!
-  message: String
-  ownedAlbum: OwnedAlbum
-  success: Boolean!
+type Producer {
+  albums: [Album!]
+  id: Int!
+  name: String!
 }
 
 type Query {
-  artist: [Artist!]!
-  genres: [Genre!]!
-  ownedAlbums: [OwnedAlbum!]!
-  wishlistAlbums: [WishlistAlbum!]!
+  artist(id: Int!, options: QueryArtistOptions): Artist
+  artists(with_albums: Boolean): [Artist!]!
+  genre(id: Int!, options: QueryGenreOptions): Genre
+  genres(options: QueryGenreOptions): [Genre!]!
+  label(id: Int!, options: QueryLabelOptions): Label
+  labels(options: QueryLabelOptions): [Label!]!
+  owned_album(id: Int!, options: QueryAlbumOptions): OwnedAlbum
+  owned_albums(options: QueryAlbumOptions): [OwnedAlbum!]!
+  producer(id: Int!, options: QueryProducerOptions): Producer
+  producers(options: QueryProducerOptions): [Producer!]!
+  wishlist_album(id: Int!, options: QueryAlbumOptions): WishlistAlbum
+  wishlist_albums(options: QueryAlbumOptions): [WishlistAlbum!]!
+}
+
+input QueryAlbumOptions {
+  with_artists: Boolean
+  with_genres: Boolean
+  with_labels: Boolean
+  with_producers: Boolean
+}
+
+input QueryArtistOptions {
+  with_albums: Boolean
+}
+
+input QueryGenreOptions {
+  with_albums: Boolean
+}
+
+input QueryLabelOptions {
+  with_albums: Boolean
+}
+
+input QueryProducerOptions {
+  with_albums: Boolean
 }
 
 type Track {
@@ -110,22 +153,50 @@ type Track {
   side: Int
 }
 
-input TrackInput {
+input UpdateAlbumInput {
+  artist_ids: [Int!]
+  description: String
+  genre_ids: [Int!]
+  id: Int!
+  label_ids: [Int!]
   length: Int
-  name: String!
+  name: String
+  producer_ids: [Int!]
+  release_data: String
+  tracks: [UpdateTrackInput!]
+}
+
+input UpdateArtistInput {
+  description: String
+  id: Int!
+  name: String
+  origin: String
+}
+
+input UpdateGenreInput {
+  id: Int!
+  name: String
+}
+
+input UpdateLabelInput {
+  id: Int!
+  name: String
+}
+
+input UpdateProducerInput {
+  id: Int!
+  name: String
+}
+
+input UpdateTrackInput {
+  length: Int
+  name: String
   side: Int
 }
 
 type WishlistAlbum {
   album: Album
-  id: ID!
-  listings: [String!]!
+  id: Int!
+  listings: [String!]
   ranking: Int
-}
-
-type WishlistAlbumMutationResponse implements MutationResponse {
-  code: Int!
-  message: String
-  success: Boolean!
-  wishlistAlbum: WishlistAlbum
 }

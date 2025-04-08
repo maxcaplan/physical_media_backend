@@ -1,0 +1,29 @@
+extend type Query {
+  producer(id: Int!, options: QueryProducerOptions): Producer
+  producers(options: QueryProducerOptions): [Producer!]!
+}
+
+input QueryProducerOptions {
+  with_albums: Boolean
+}
+
+extend type Mutation {
+  add_producer(input: AddProducerInput!): Producer!
+  update_producer(input: UpdateProducerInput!): Producer
+  delete_producer(id: Int!): Producer
+}
+
+input AddProducerInput {
+  name: String!
+}
+
+input UpdateProducerInput {
+  id: Int!
+  name: String
+}
+
+type Producer {
+  id: Int!
+  name: String!
+  albums: [Album!]
+}
