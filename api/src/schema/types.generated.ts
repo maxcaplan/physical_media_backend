@@ -45,6 +45,11 @@ export type AddLabelInput = {
   name: Scalars['String']['input'];
 };
 
+export type AddOwnedAlbumInput = {
+  album_input: AddAlbumInput;
+  condition?: InputMaybe<Condition>;
+};
+
 export type AddProducerInput = {
   name: Scalars['String']['input'];
 };
@@ -53,6 +58,12 @@ export type AddTrackInput = {
   length?: InputMaybe<Scalars['Int']['input']>;
   name: Scalars['String']['input'];
   side?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type AddWishlistAlbumInput = {
+  album_input: AddAlbumInput;
+  listings?: InputMaybe<Array<Scalars['String']['input']>>;
+  ranking?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Album = {
@@ -139,8 +150,7 @@ export type Mutationadd_labelArgs = {
 
 
 export type Mutationadd_owned_albumArgs = {
-  condition?: InputMaybe<Condition>;
-  input: AddAlbumInput;
+  input: AddOwnedAlbumInput;
 };
 
 
@@ -150,9 +160,7 @@ export type Mutationadd_producerArgs = {
 
 
 export type Mutationadd_wishlist_albumArgs = {
-  input: AddAlbumInput;
-  listings?: InputMaybe<Array<Scalars['String']['input']>>;
-  ranking?: InputMaybe<Scalars['Int']['input']>;
+  input: AddWishlistAlbumInput;
 };
 
 
@@ -202,8 +210,7 @@ export type Mutationupdate_labelArgs = {
 
 
 export type Mutationupdate_owned_albumArgs = {
-  condition?: InputMaybe<Condition>;
-  input: UpdateAlbumInput;
+  input: UpdateOwnedAlbumInput;
 };
 
 
@@ -213,9 +220,7 @@ export type Mutationupdate_producerArgs = {
 
 
 export type Mutationupdate_wishlist_albumArgs = {
-  input: UpdateAlbumInput;
-  listings?: InputMaybe<Array<Scalars['String']['input']>>;
-  ranking?: InputMaybe<Scalars['Int']['input']>;
+  input: UpdateWishlistAlbumInput;
 };
 
 export type OwnedAlbum = {
@@ -348,7 +353,6 @@ export type UpdateAlbumInput = {
   artist_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
   description?: InputMaybe<Scalars['String']['input']>;
   genre_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id: Scalars['Int']['input'];
   label_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
   length?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -374,6 +378,12 @@ export type UpdateLabelInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateOwnedAlbumInput = {
+  album_input?: InputMaybe<UpdateAlbumInput>;
+  condition?: InputMaybe<Condition>;
+  id: Scalars['Int']['input'];
+};
+
 export type UpdateProducerInput = {
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -383,6 +393,13 @@ export type UpdateTrackInput = {
   length?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   side?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateWishlistAlbumInput = {
+  album_input?: InputMaybe<UpdateAlbumInput>;
+  id: Scalars['Int']['input'];
+  listings?: InputMaybe<Array<Scalars['String']['input']>>;
+  ranking?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type WishlistAlbum = {
@@ -470,8 +487,10 @@ export type ResolversTypes = {
   AddArtistInput: AddArtistInput;
   AddGenreInput: AddGenreInput;
   AddLabelInput: AddLabelInput;
+  AddOwnedAlbumInput: AddOwnedAlbumInput;
   AddProducerInput: AddProducerInput;
   AddTrackInput: AddTrackInput;
+  AddWishlistAlbumInput: AddWishlistAlbumInput;
   Album: ResolverTypeWrapper<Album>;
   Artist: ResolverTypeWrapper<Artist>;
   Condition: ResolverTypeWrapper<'P' | 'G' | 'VG' | 'VGP' | 'NM' | 'M'>;
@@ -492,8 +511,10 @@ export type ResolversTypes = {
   UpdateArtistInput: UpdateArtistInput;
   UpdateGenreInput: UpdateGenreInput;
   UpdateLabelInput: UpdateLabelInput;
+  UpdateOwnedAlbumInput: UpdateOwnedAlbumInput;
   UpdateProducerInput: UpdateProducerInput;
   UpdateTrackInput: UpdateTrackInput;
+  UpdateWishlistAlbumInput: UpdateWishlistAlbumInput;
   WishlistAlbum: ResolverTypeWrapper<WishlistAlbum>;
 };
 
@@ -505,8 +526,10 @@ export type ResolversParentTypes = {
   AddArtistInput: AddArtistInput;
   AddGenreInput: AddGenreInput;
   AddLabelInput: AddLabelInput;
+  AddOwnedAlbumInput: AddOwnedAlbumInput;
   AddProducerInput: AddProducerInput;
   AddTrackInput: AddTrackInput;
+  AddWishlistAlbumInput: AddWishlistAlbumInput;
   Album: Album;
   Artist: Artist;
   Genre: Genre;
@@ -526,8 +549,10 @@ export type ResolversParentTypes = {
   UpdateArtistInput: UpdateArtistInput;
   UpdateGenreInput: UpdateGenreInput;
   UpdateLabelInput: UpdateLabelInput;
+  UpdateOwnedAlbumInput: UpdateOwnedAlbumInput;
   UpdateProducerInput: UpdateProducerInput;
   UpdateTrackInput: UpdateTrackInput;
+  UpdateWishlistAlbumInput: UpdateWishlistAlbumInput;
   WishlistAlbum: WishlistAlbum;
 };
 

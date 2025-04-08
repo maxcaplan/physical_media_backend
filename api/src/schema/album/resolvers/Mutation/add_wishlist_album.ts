@@ -1,3 +1,16 @@
+import type { AddAlbumInput, AddWishlistAlbumInput, Album, MutationResolvers, WishlistAlbum } from './../../../types.generated';
 
-        import type   { MutationResolvers } from './../../../types.generated';
-        export const add_wishlist_album: NonNullable<MutationResolvers['add_wishlist_album']> = async (_parent, _arg, _ctx) => { /* Implement Mutation.add_wishlist_album resolver logic here */ };
+type AddWishlistAlbumFields = Omit<AddWishlistAlbumInput, "album_input"> & { album_id: number }
+
+export const add_wishlist_album: NonNullable<MutationResolvers['add_wishlist_album']> = async (
+    _parent,
+    arg,
+    ctx
+) => {
+    const album_results = await ctx.db.insert<AddAlbumInput, Album>("albums", arg.input.album_input)
+    const { album_input, ...rest } = arg.input
+    const wishlist_album_input: AddWishlistAlbumFields = { ...rest, album_id: album_results.id }
+    const results = await ctx.db.insert<AddWishlistAlbumFields, WishlistAlbum>("wishlist_albums", wishlist_album_input)
+    results.album = album_results
+    return results
+};

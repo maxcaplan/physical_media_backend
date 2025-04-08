@@ -1,7 +1,7 @@
 export type DataType = Object
 
 export type WithID<T extends DataType> = T & {
-	id: string
+	id: number
 }
 
 export interface ConnectorResponse {

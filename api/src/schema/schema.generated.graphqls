@@ -24,6 +24,11 @@ input AddLabelInput {
   name: String!
 }
 
+input AddOwnedAlbumInput {
+  album_input: AddAlbumInput!
+  condition: Condition
+}
+
 input AddProducerInput {
   name: String!
 }
@@ -32,6 +37,12 @@ input AddTrackInput {
   length: Int
   name: String!
   side: Int
+}
+
+input AddWishlistAlbumInput {
+  album_input: AddAlbumInput!
+  listings: [String!]
+  ranking: Int
 }
 
 type Album {
@@ -80,9 +91,9 @@ type Mutation {
   add_artist(input: AddArtistInput!): Artist!
   add_genre(input: AddGenreInput!): Genre!
   add_label(input: AddLabelInput!): Label!
-  add_owned_album(condition: Condition, input: AddAlbumInput!): OwnedAlbum!
+  add_owned_album(input: AddOwnedAlbumInput!): OwnedAlbum!
   add_producer(input: AddProducerInput!): Producer!
-  add_wishlist_album(input: AddAlbumInput!, listings: [String!], ranking: Int): WishlistAlbum!
+  add_wishlist_album(input: AddWishlistAlbumInput!): WishlistAlbum!
   delete_artist(id: Int!): Artist
   delete_genre(id: Int!): Genre
   delete_label(id: Int!): Label
@@ -92,9 +103,9 @@ type Mutation {
   update_artist(input: UpdateArtistInput!): Artist
   update_genre(input: UpdateGenreInput!): Genre
   update_label(input: UpdateLabelInput!): Label
-  update_owned_album(condition: Condition, input: UpdateAlbumInput!): OwnedAlbum
+  update_owned_album(input: UpdateOwnedAlbumInput!): OwnedAlbum
   update_producer(input: UpdateProducerInput!): Producer
-  update_wishlist_album(input: UpdateAlbumInput!, listings: [String!], ranking: Int): WishlistAlbum
+  update_wishlist_album(input: UpdateWishlistAlbumInput!): WishlistAlbum
 }
 
 type OwnedAlbum {
@@ -157,7 +168,6 @@ input UpdateAlbumInput {
   artist_ids: [Int!]
   description: String
   genre_ids: [Int!]
-  id: Int!
   label_ids: [Int!]
   length: Int
   name: String
@@ -183,6 +193,12 @@ input UpdateLabelInput {
   name: String
 }
 
+input UpdateOwnedAlbumInput {
+  album_input: UpdateAlbumInput
+  condition: Condition
+  id: Int!
+}
+
 input UpdateProducerInput {
   id: Int!
   name: String
@@ -192,6 +208,13 @@ input UpdateTrackInput {
   length: Int
   name: String
   side: Int
+}
+
+input UpdateWishlistAlbumInput {
+  album_input: UpdateAlbumInput
+  id: Int!
+  listings: [String!]
+  ranking: Int
 }
 
 type WishlistAlbum {

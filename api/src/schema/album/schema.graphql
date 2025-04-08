@@ -14,27 +14,21 @@ input QueryAlbumOptions {
 
 extend type Mutation {
   add_wishlist_album(
-    input: AddAlbumInput!
-    listings: [String!]
-    ranking: Int
+    input: AddWishlistAlbumInput!
   ): WishlistAlbum!
 
   update_wishlist_album(
-    input: UpdateAlbumInput!
-    listings: [String!]
-    ranking: Int
+    input: UpdateWishlistAlbumInput!
   ): WishlistAlbum
 
   delete_wishlist_album(id: Int!): WishlistAlbum
 
   add_owned_album(
-    input: AddAlbumInput!
-    condition: Condition
+    input: AddOwnedAlbumInput!
   ): OwnedAlbum!
   
   update_owned_album(
-    input: UpdateAlbumInput!
-    condition: Condition
+    input: UpdateOwnedAlbumInput!
   ): OwnedAlbum
 
   delete_owned_album(id: Int!): OwnedAlbum
@@ -52,8 +46,18 @@ input AddAlbumInput {
   length: Int
 }
 
+input AddWishlistAlbumInput {
+  album_input: AddAlbumInput!
+  listings: [String!]
+  ranking: Int
+}
+
+input AddOwnedAlbumInput {
+  album_input: AddAlbumInput!
+  condition: Condition
+}
+
 input UpdateAlbumInput {
-  id: Int!
   name: String
   description: String
   release_data: String
@@ -63,6 +67,19 @@ input UpdateAlbumInput {
   genre_ids: [Int!]
   tracks: [UpdateTrackInput!]
   length: Int
+}
+
+input UpdateWishlistAlbumInput {
+  id: Int!
+  album_input: UpdateAlbumInput
+  listings: [String!]
+  ranking: Int
+}
+
+input UpdateOwnedAlbumInput {
+  id: Int!
+  album_input: UpdateAlbumInput
+  condition: Condition
 }
 
 input AddTrackInput {

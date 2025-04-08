@@ -1,3 +1,10 @@
+import type { OwnedAlbum, QueryResolvers } from './../../../types.generated';
 
-        import type   { QueryResolvers } from './../../../types.generated';
-        export const owned_albums: NonNullable<QueryResolvers['owned_albums']> = async (_parent, _arg, _ctx) => { /* Implement Query.owned_albums resolver logic here */ };
+export const owned_albums: NonNullable<QueryResolvers['owned_albums']> = async (
+    _parent,
+    _arg,
+    ctx
+) => {
+    const results = await ctx.db.select<OwnedAlbum>("owned_albums")
+    return Promise.resolve(results)
+};
