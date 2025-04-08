@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { Album, MutationResolvers, OwnedAlbum } from './../../../types.generated';
 
 export const delete_owned_album: NonNullable<MutationResolvers['delete_owned_album']> = async (
@@ -10,11 +10,7 @@ export const delete_owned_album: NonNullable<MutationResolvers['delete_owned_alb
     const owned_album_results = await ctx.db.delete<OwnedAlbum & { album_id: number }>(
         "owned_albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 
@@ -24,11 +20,7 @@ export const delete_owned_album: NonNullable<MutationResolvers['delete_owned_alb
     const album_results = await ctx.db.delete<Album>(
         "albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: owned_album_results[0].album_id
-            }
+            conditional: new ConnectorCondition("id", "=", owned_album_results[0].album_id)
         }
     )
 

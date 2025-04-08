@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type {
     UpdateAlbumInput,
     Album,
@@ -18,11 +18,7 @@ export const update_owned_album: NonNullable<MutationResolvers['update_owned_alb
         "owned_albums",
         { ...rest },
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.input.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.input.id)
         }
     )
 
@@ -35,11 +31,7 @@ export const update_owned_album: NonNullable<MutationResolvers['update_owned_alb
             "albums",
             arg.input.album_input,
             {
-                conditional: {
-                    lhs: "id",
-                    operator: ConnectorConditionOperator.EQUAL,
-                    rhs: owned_album_results[0].album_id
-                }
+                conditional: new ConnectorCondition("id", "=", owned_album_results[0].album_id)
             }
         )
 

@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { Artist, MutationResolvers, UpdateArtistInput } from './../../../types.generated';
 export const update_artist: NonNullable<MutationResolvers['update_artist']> = async (
     _parent,
@@ -9,11 +9,7 @@ export const update_artist: NonNullable<MutationResolvers['update_artist']> = as
         "artists",
         arg.input,
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.input.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.input.id)
         }
     )
 

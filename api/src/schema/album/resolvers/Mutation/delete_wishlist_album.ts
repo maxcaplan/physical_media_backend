@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { Album, MutationResolvers, WishlistAlbum } from './../../../types.generated';
 
 export const delete_wishlist_album: NonNullable<MutationResolvers['delete_wishlist_album']> = async (
@@ -10,11 +10,7 @@ export const delete_wishlist_album: NonNullable<MutationResolvers['delete_wishli
     const wishlist_album_results = await ctx.db.delete<WishlistAlbum & { album_id: number }>(
         "wishlist_albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 
@@ -24,11 +20,7 @@ export const delete_wishlist_album: NonNullable<MutationResolvers['delete_wishli
     const album_results = await ctx.db.delete<Album>(
         "albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: wishlist_album_results[0].album_id
-            }
+            conditional: new ConnectorCondition("id", "=", wishlist_album_results[0].album_id)
         }
     )
 

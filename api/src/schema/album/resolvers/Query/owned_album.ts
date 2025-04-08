@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { OwnedAlbum, QueryResolvers } from './../../../types.generated';
 export const owned_album: NonNullable<QueryResolvers['owned_album']> = async (
     _parent,
@@ -8,11 +8,7 @@ export const owned_album: NonNullable<QueryResolvers['owned_album']> = async (
     const results = await ctx.db.select<OwnedAlbum>(
         "owned_albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 

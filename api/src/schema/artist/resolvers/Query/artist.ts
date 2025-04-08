@@ -1,5 +1,5 @@
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { Artist, QueryResolvers } from './../../../types.generated';
-import { ConnectorConditionConjunction, ConnectorConditionOperator } from '../../../../connectors/connector';
 
 export const artist: NonNullable<QueryResolvers['artist']> = async (
     _parent,
@@ -9,11 +9,7 @@ export const artist: NonNullable<QueryResolvers['artist']> = async (
     const results = await ctx.db.select<Artist>(
         'artists',
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id,
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 

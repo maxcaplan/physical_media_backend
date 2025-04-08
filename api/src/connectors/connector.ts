@@ -1,3 +1,5 @@
+import type { ConnectorCondition } from "./connector_condition"
+
 export type DataType = Object
 
 export type WithID<T extends DataType> = T & {
@@ -21,30 +23,6 @@ export interface ConnectorDeleteOptions {
 
 export interface ConnectorUpdateOptions {
 	conditional?: ConnectorCondition
-}
-
-export interface ConnectorCondition {
-	lhs: string | number
-	rhs: string | number
-	operator: ConnectorConditionOperator
-	next?: {
-		condition: ConnectorCondition,
-		conjunction: ConnectorConditionConjunction
-	}
-}
-
-export enum ConnectorConditionOperator {
-	EQUAL,
-	LESS_THAN,
-	GREATER_THAN,
-	LESS_THAN_OR_EQUAL,
-	GREATER_THAN_OR_EQUAL,
-	NOT_EQUAL,
-}
-
-export enum ConnectorConditionConjunction {
-	AND,
-	OR,
 }
 
 /** Database connector abstraction */

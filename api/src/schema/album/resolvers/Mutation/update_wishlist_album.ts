@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type {
     Album,
     MutationResolvers,
@@ -18,11 +18,7 @@ export const update_wishlist_album: NonNullable<MutationResolvers['update_wishli
         "wishlist_albums",
         { ...rest },
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.input.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.input.id)
         }
     )
 
@@ -35,11 +31,7 @@ export const update_wishlist_album: NonNullable<MutationResolvers['update_wishli
             "albums",
             arg.input.album_input,
             {
-                conditional: {
-                    lhs: "id",
-                    operator: ConnectorConditionOperator.EQUAL,
-                    rhs: wishlist_album_results[0].album_id
-                }
+                conditional: new ConnectorCondition("id", "=", wishlist_album_results[0].album_id)
             }
         )
 

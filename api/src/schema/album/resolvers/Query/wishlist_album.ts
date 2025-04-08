@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { QueryResolvers, WishlistAlbum } from './../../../types.generated';
 
 export const wishlist_album: NonNullable<QueryResolvers['wishlist_album']> = async (
@@ -9,11 +9,7 @@ export const wishlist_album: NonNullable<QueryResolvers['wishlist_album']> = asy
     const results = await ctx.db.select<WishlistAlbum>(
         "wishlist_albums",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 

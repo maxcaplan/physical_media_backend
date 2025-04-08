@@ -1,4 +1,4 @@
-import { ConnectorConditionOperator } from '../../../../connectors/connector';
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { Artist, MutationResolvers } from './../../../types.generated';
 
 export const delete_artist: NonNullable<MutationResolvers['delete_artist']> = async (
@@ -9,11 +9,7 @@ export const delete_artist: NonNullable<MutationResolvers['delete_artist']> = as
     const results = await ctx.db.delete<Artist>(
         "artists",
         {
-            conditional: {
-                lhs: "id",
-                operator: ConnectorConditionOperator.EQUAL,
-                rhs: arg.id
-            }
+            conditional: new ConnectorCondition("id", "=", arg.id)
         }
     )
 

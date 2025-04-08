@@ -1,3 +1,10 @@
+import type { Genre, QueryResolvers } from './../../../types.generated';
 
-        import type   { QueryResolvers } from './../../../types.generated';
-        export const genres: NonNullable<QueryResolvers['genres']> = async (_parent, _arg, _ctx) => { /* Implement Query.genres resolver logic here */ };
+export const genres: NonNullable<QueryResolvers['genres']> = async (
+    _parent,
+    _arg,
+    ctx
+) => {
+    const results = ctx.db.select<Genre>("genres")
+    return Promise.resolve(results)
+};

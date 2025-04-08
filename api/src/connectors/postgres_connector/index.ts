@@ -1,4 +1,14 @@
-import { ConnectorConditionConjunction, ConnectorConditionOperator, type Connector, type ConnectorResponse, type ConnectorCondition, type ConnectorSelectOptions, type DataType, type WithID, type ConnectorDeleteOptions, type ConnectorUpdateOptions } from "../connector";
+import type {
+	Connector,
+	ConnectorResponse,
+	ConnectorSelectOptions,
+	DataType,
+	WithID,
+	ConnectorDeleteOptions,
+	ConnectorUpdateOptions
+} from "../connector";
+import { ConnectorConditionConjunction, ConnectorConditionOperator, type ConnectorCondition } from "../connector_condition";
+
 import { sql, SQL } from "bun";
 
 interface PostgresConnectorProps {
