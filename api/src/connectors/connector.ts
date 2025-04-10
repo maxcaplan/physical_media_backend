@@ -15,6 +15,13 @@ export interface ConnectorResponse {
 export interface ConnectorSelectOptions {
 	fields?: string | string[]
 	conditional?: ConnectorCondition
+	sub_select?: ConnectorSubSelect[]
+}
+
+export interface ConnectorSubSelect {
+	from: string
+	as?: string
+	options?: ConnectorSelectOptions
 }
 
 export interface ConnectorDeleteOptions {

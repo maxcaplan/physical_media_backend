@@ -27,6 +27,7 @@ export enum ConnectorConditionConjunction {
 }
 
 export type OperatorString = "=" | "<" | ">" | "<=" | ">=" | "!="
+export type ConjunctionString = "and" | "or"
 
 export class ConnectorCondition implements ConnectorCondition {
 	lhs: string
@@ -49,12 +50,12 @@ export class ConnectorCondition implements ConnectorCondition {
 
 	/** Add the next condition */
 	add(
-		conjunction: ConnectorConditionConjunction,
+		conjunction: ConnectorConditionConjunction | ConjunctionString,
 		condition: ConnectorCondition
 	): ConnectorCondition {
 		this.next = {
 			condition,
-			conjunction
+			conjunction: ConnectorCondition.string_to_conjunction(conjunction)
 		}
 
 		return this
@@ -80,6 +81,21 @@ export class ConnectorCondition implements ConnectorCondition {
 				return ConnectorConditionOperator.NOT_EQUAL
 			default:
 				return ConnectorConditionOperator.EQUAL
+		}
+	}
+
+	private static string_to_conjunction(
+		conjunction: ConnectorConditionConjunction | ConjunctionString
+	): ConnectorConditionConjunction {
+		if (typeof conjunction === "number") return conjunction
+
+		switch (conjunction) {
+			case "and":
+				return ConnectorConditionConjunction.AND
+			case "or":
+				return ConnectorConditionConjunction.OR
+			default:
+				return ConnectorConditionConjunction.AND;
 		}
 	}
 }

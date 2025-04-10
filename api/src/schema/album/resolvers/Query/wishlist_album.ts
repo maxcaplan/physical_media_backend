@@ -9,7 +9,7 @@ export const wishlist_album: NonNullable<QueryResolvers['wishlist_album']> = asy
     const results = await ctx.db.select<WishlistAlbum>(
         "wishlist_albums",
         {
-            conditional: new ConnectorCondition("id", "=", arg.id)
+            conditional: new ConnectorCondition("wishlist_albums.id", "=", arg.id),
         }
     )
 

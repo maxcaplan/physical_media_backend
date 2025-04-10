@@ -1,3 +1,4 @@
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { QueryResolvers, WishlistAlbum } from './../../../types.generated';
 
 export const wishlist_albums: NonNullable<QueryResolvers['wishlist_albums']> = async (
@@ -5,6 +6,8 @@ export const wishlist_albums: NonNullable<QueryResolvers['wishlist_albums']> = a
     _arg,
     ctx
 ) => {
-    const results = await ctx.db.select<WishlistAlbum>("wishlist_albums")
+    const results = await ctx.db.select<WishlistAlbum>(
+        "wishlist_albums",
+    )
     return Promise.resolve(results)
 };

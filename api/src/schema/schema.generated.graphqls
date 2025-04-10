@@ -66,6 +66,17 @@ type Artist {
   origin: String
 }
 
+input ArtistAlbumInput {
+  album_id: Int!
+  artist_id: Int!
+}
+
+type ArtistAlbumRelation {
+  album_id: Int!
+  artist_id: Int!
+  id: Int!
+}
+
 enum Condition {
   G
   M
@@ -81,18 +92,44 @@ type Genre {
   name: String!
 }
 
+input GenreAlbumInput {
+  album_id: Int!
+  genre_id: Int!
+}
+
+type GenreAlbumRelation {
+  album_id: Int!
+  genre_id: Int!
+  id: Int!
+}
+
 type Label {
   albums: [Album!]
   id: Int!
   name: String!
 }
 
+input LabelAlbumInput {
+  album_id: Int!
+  label_id: Int!
+}
+
+type LabelAlbumRelation {
+  album_id: Int!
+  id: Int!
+  label_id: Int!
+}
+
 type Mutation {
   add_artist(input: AddArtistInput!): Artist!
+  add_artist_to_album(input: ArtistAlbumInput!): ArtistAlbumRelation
   add_genre(input: AddGenreInput!): Genre!
+  add_genre_to_album(input: GenreAlbumInput!): GenreAlbumRelation
   add_label(input: AddLabelInput!): Label!
+  add_label_to_album(input: LabelAlbumInput!): LabelAlbumRelation
   add_owned_album(input: AddOwnedAlbumInput!): OwnedAlbum!
   add_producer(input: AddProducerInput!): Producer!
+  add_producer_to_album(input: ProducerAlbumInput!): ProducerAlbumRelation
   add_wishlist_album(input: AddWishlistAlbumInput!): WishlistAlbum!
   delete_artist(id: Int!): Artist
   delete_genre(id: Int!): Genre
@@ -100,6 +137,10 @@ type Mutation {
   delete_owned_album(id: Int!): OwnedAlbum
   delete_producer(id: Int!): Producer
   delete_wishlist_album(id: Int!): WishlistAlbum
+  remove_artist_from_album(input: ArtistAlbumInput!): ArtistAlbumRelation
+  remove_genre_from_album(input: GenreAlbumInput!): GenreAlbumRelation
+  remove_label_from_album(input: LabelAlbumInput!): LabelAlbumRelation
+  remove_producer_from_album(input: ProducerAlbumInput!): ProducerAlbumRelation
   update_artist(input: UpdateArtistInput!): Artist
   update_genre(input: UpdateGenreInput!): Genre
   update_label(input: UpdateLabelInput!): Label
@@ -118,6 +159,17 @@ type Producer {
   albums: [Album!]
   id: Int!
   name: String!
+}
+
+input ProducerAlbumInput {
+  album_id: Int!
+  producer_id: Int!
+}
+
+type ProducerAlbumRelation {
+  album_id: Int!
+  id: Int!
+  producer_id: Int!
 }
 
 type Query {

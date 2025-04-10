@@ -7,7 +7,12 @@ import type {
 	ConnectorDeleteOptions,
 	ConnectorUpdateOptions
 } from "../connector";
-import { ConnectorConditionConjunction, ConnectorConditionOperator, type ConnectorCondition } from "../connector_condition";
+
+import {
+	ConnectorConditionConjunction,
+	ConnectorConditionOperator,
+	type ConnectorCondition
+} from "../connector_condition";
 
 import { sql, SQL } from "bun";
 
@@ -125,12 +130,36 @@ export class PostgresConnector implements Connector {
 	): Promise<WithID<ObjectType>[]> {
 		this.assert_is_connected()
 
-		const conditional = options?.conditional === undefined ?
-			sql`` :
-			sql.unsafe(PostgresConnector.conditional_to_string(options.conditional))
+		const conditional_string = (
+			conditional: ConnectorCondition | undefined,
+			start = "WHERE"
+		) => conditional === undefined ?
+				"" :
+				PostgresConnector.conditional_to_string(conditional, start)
+
+		const joins = (() => {
+			if (options?.sub_select === undefined || options.sub_select.length === 0) return this.db``
+
+			const query = options.sub_select.reduce((accumulator, current) => {
+				const join = `JOIN ${current.from} ${conditional_string(current.options?.conditional, "ON")}`
+				return accumulator + join
+			}, "")
+
+			return this.db.unsafe(query)
+		})()
+
+		const join_from = (() => {
+			if (options?.sub_select === undefined) return this.db``
+
+			const value = options.sub_select.reduce((accumulator, current) => {
+				return accumulator + `, row_to_json(${current.from})${current.as === undefined ? '' : ` AS ${current.as}`}`
+			}, "")
+
+			return this.db.unsafe(value)
+		})()
 
 		return (
-			await this.db`SELECT * FROM ${this.db(from)} ${conditional}`
+			await this.db`SELECT ${this.db(from)}.*${join_from} FROM ${this.db(from)} ${joins} ${this.db.unsafe(conditional_string(options?.conditional))}`
 		) as WithID<ObjectType>[]
 	}
 
@@ -169,7 +198,7 @@ export class PostgresConnector implements Connector {
 		return `postgres://${this.user}:${this.pass}@${this.host}:${this.port}/${this.database}`
 	}
 
-	static conditional_to_string(conditional?: ConnectorCondition): string {
+	static conditional_to_string(conditional?: ConnectorCondition, start: string = "WHERE"): string {
 		if (conditional === undefined) return ""
 
 		const operator_to_string = (operator: ConnectorConditionOperator): string => {
@@ -202,10 +231,9 @@ export class PostgresConnector implements Connector {
 			}
 		}
 
-		let result = "WHERE "
+		let result = `${start} `
 		while (true) {
-			const rhs = typeof conditional.rhs === "number" ? `${conditional.rhs}` : `'${conditional.rhs}'`
-			result += `${conditional.lhs} ${operator_to_string(conditional.operator)} ${rhs}`
+			result += `${conditional.lhs} ${operator_to_string(conditional.operator)} ${conditional.rhs}`
 
 			if (conditional.next === undefined) break
 

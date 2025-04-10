@@ -1,3 +1,4 @@
+import { ConnectorCondition } from '../../../../connectors/connector_condition';
 import type { OwnedAlbum, QueryResolvers } from './../../../types.generated';
 
 export const owned_albums: NonNullable<QueryResolvers['owned_albums']> = async (
@@ -5,6 +6,8 @@ export const owned_albums: NonNullable<QueryResolvers['owned_albums']> = async (
     _arg,
     ctx
 ) => {
-    const results = await ctx.db.select<OwnedAlbum>("owned_albums")
+    const results = await ctx.db.select<OwnedAlbum>(
+        "owned_albums",
+    )
     return Promise.resolve(results)
 };

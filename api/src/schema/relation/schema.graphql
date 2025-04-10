@@ -1,0 +1,57 @@
+extend type Mutation {
+  add_artist_to_album(input: ArtistAlbumInput!): ArtistAlbumRelation
+  remove_artist_from_album(input: ArtistAlbumInput!): ArtistAlbumRelation
+
+  add_genre_to_album(input: GenreAlbumInput!): GenreAlbumRelation
+  remove_genre_from_album(input: GenreAlbumInput!): GenreAlbumRelation
+
+  add_label_to_album(input: LabelAlbumInput!): LabelAlbumRelation
+  remove_label_from_album(input: LabelAlbumInput!): LabelAlbumRelation
+
+  add_producer_to_album(input: ProducerAlbumInput!): ProducerAlbumRelation
+  remove_producer_from_album(input: ProducerAlbumInput!): ProducerAlbumRelation
+}
+
+input ArtistAlbumInput {
+	artist_id: Int!
+	album_id: Int!
+}
+
+input GenreAlbumInput {
+	genre_id: Int!
+	album_id: Int!
+}
+
+input LabelAlbumInput {
+	label_id: Int!
+	album_id: Int!
+}
+
+input ProducerAlbumInput {
+	producer_id: Int!
+	album_id: Int!
+}
+
+type ArtistAlbumRelation {
+	id: Int!
+	artist_id: Int!
+	album_id: Int!
+}
+
+type GenreAlbumRelation {
+	id: Int!
+	genre_id: Int!
+	album_id: Int!
+}
+
+type LabelAlbumRelation {
+	id: Int!
+	label_id: Int!
+	album_id: Int!
+}
+
+type ProducerAlbumRelation {
+	id: Int!
+	producer_id: Int!
+	album_id: Int!
+}
