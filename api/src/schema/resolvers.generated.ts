@@ -21,12 +21,14 @@ import    { add_label_to_album as Mutation_add_label_to_album } from './relation
 import    { add_owned_album as Mutation_add_owned_album } from './album/resolvers/Mutation/add_owned_album';
 import    { add_producer as Mutation_add_producer } from './producer/resolvers/Mutation/add_producer';
 import    { add_producer_to_album as Mutation_add_producer_to_album } from './relation/resolvers/Mutation/add_producer_to_album';
+import    { add_track as Mutation_add_track } from './album/resolvers/Mutation/add_track';
 import    { add_wishlist_album as Mutation_add_wishlist_album } from './album/resolvers/Mutation/add_wishlist_album';
 import    { delete_artist as Mutation_delete_artist } from './artist/resolvers/Mutation/delete_artist';
 import    { delete_genre as Mutation_delete_genre } from './genre/resolvers/Mutation/delete_genre';
 import    { delete_label as Mutation_delete_label } from './label/resolvers/Mutation/delete_label';
 import    { delete_owned_album as Mutation_delete_owned_album } from './album/resolvers/Mutation/delete_owned_album';
 import    { delete_producer as Mutation_delete_producer } from './producer/resolvers/Mutation/delete_producer';
+import    { delete_track as Mutation_delete_track } from './album/resolvers/Mutation/delete_track';
 import    { delete_wishlist_album as Mutation_delete_wishlist_album } from './album/resolvers/Mutation/delete_wishlist_album';
 import    { remove_artist_from_album as Mutation_remove_artist_from_album } from './relation/resolvers/Mutation/remove_artist_from_album';
 import    { remove_genre_from_album as Mutation_remove_genre_from_album } from './relation/resolvers/Mutation/remove_genre_from_album';
@@ -37,6 +39,7 @@ import    { update_genre as Mutation_update_genre } from './genre/resolvers/Muta
 import    { update_label as Mutation_update_label } from './label/resolvers/Mutation/update_label';
 import    { update_owned_album as Mutation_update_owned_album } from './album/resolvers/Mutation/update_owned_album';
 import    { update_producer as Mutation_update_producer } from './producer/resolvers/Mutation/update_producer';
+import    { update_track as Mutation_update_track } from './album/resolvers/Mutation/update_track';
 import    { update_wishlist_album as Mutation_update_wishlist_album } from './album/resolvers/Mutation/update_wishlist_album';
 import    { Album } from './album/resolvers/Album';
 import    { Artist } from './artist/resolvers/Artist';
@@ -52,7 +55,7 @@ import    { Track } from './album/resolvers/Track';
 import    { WishlistAlbum } from './album/resolvers/WishlistAlbum';
     export const resolvers: Resolvers = {
       Query: { artist: Query_artist,artists: Query_artists,genre: Query_genre,genres: Query_genres,label: Query_label,labels: Query_labels,owned_album: Query_owned_album,owned_albums: Query_owned_albums,producer: Query_producer,producers: Query_producers,wishlist_album: Query_wishlist_album,wishlist_albums: Query_wishlist_albums },
-      Mutation: { add_artist: Mutation_add_artist,add_artist_to_album: Mutation_add_artist_to_album,add_genre: Mutation_add_genre,add_genre_to_album: Mutation_add_genre_to_album,add_label: Mutation_add_label,add_label_to_album: Mutation_add_label_to_album,add_owned_album: Mutation_add_owned_album,add_producer: Mutation_add_producer,add_producer_to_album: Mutation_add_producer_to_album,add_wishlist_album: Mutation_add_wishlist_album,delete_artist: Mutation_delete_artist,delete_genre: Mutation_delete_genre,delete_label: Mutation_delete_label,delete_owned_album: Mutation_delete_owned_album,delete_producer: Mutation_delete_producer,delete_wishlist_album: Mutation_delete_wishlist_album,remove_artist_from_album: Mutation_remove_artist_from_album,remove_genre_from_album: Mutation_remove_genre_from_album,remove_label_from_album: Mutation_remove_label_from_album,remove_producer_from_album: Mutation_remove_producer_from_album,update_artist: Mutation_update_artist,update_genre: Mutation_update_genre,update_label: Mutation_update_label,update_owned_album: Mutation_update_owned_album,update_producer: Mutation_update_producer,update_wishlist_album: Mutation_update_wishlist_album },
+      Mutation: { add_artist: Mutation_add_artist,add_artist_to_album: Mutation_add_artist_to_album,add_genre: Mutation_add_genre,add_genre_to_album: Mutation_add_genre_to_album,add_label: Mutation_add_label,add_label_to_album: Mutation_add_label_to_album,add_owned_album: Mutation_add_owned_album,add_producer: Mutation_add_producer,add_producer_to_album: Mutation_add_producer_to_album,add_track: Mutation_add_track,add_wishlist_album: Mutation_add_wishlist_album,delete_artist: Mutation_delete_artist,delete_genre: Mutation_delete_genre,delete_label: Mutation_delete_label,delete_owned_album: Mutation_delete_owned_album,delete_producer: Mutation_delete_producer,delete_track: Mutation_delete_track,delete_wishlist_album: Mutation_delete_wishlist_album,remove_artist_from_album: Mutation_remove_artist_from_album,remove_genre_from_album: Mutation_remove_genre_from_album,remove_label_from_album: Mutation_remove_label_from_album,remove_producer_from_album: Mutation_remove_producer_from_album,update_artist: Mutation_update_artist,update_genre: Mutation_update_genre,update_label: Mutation_update_label,update_owned_album: Mutation_update_owned_album,update_producer: Mutation_update_producer,update_track: Mutation_update_track,update_wishlist_album: Mutation_update_wishlist_album },
       
       Album: Album,
 Artist: Artist,

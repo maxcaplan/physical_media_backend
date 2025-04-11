@@ -55,8 +55,10 @@ export type AddProducerInput = {
 };
 
 export type AddTrackInput = {
+  album_id: Scalars['Int']['input'];
   length?: InputMaybe<Scalars['Int']['input']>;
   name: Scalars['String']['input'];
+  position: Scalars['Int']['input'];
   side?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -158,12 +160,14 @@ export type Mutation = {
   add_owned_album: OwnedAlbum;
   add_producer: Producer;
   add_producer_to_album?: Maybe<ProducerAlbumRelation>;
+  add_track: Track;
   add_wishlist_album: WishlistAlbum;
   delete_artist?: Maybe<Artist>;
   delete_genre?: Maybe<Genre>;
   delete_label?: Maybe<Label>;
   delete_owned_album?: Maybe<OwnedAlbum>;
   delete_producer?: Maybe<Producer>;
+  delete_track?: Maybe<Track>;
   delete_wishlist_album?: Maybe<WishlistAlbum>;
   remove_artist_from_album?: Maybe<ArtistAlbumRelation>;
   remove_genre_from_album?: Maybe<GenreAlbumRelation>;
@@ -174,6 +178,7 @@ export type Mutation = {
   update_label?: Maybe<Label>;
   update_owned_album?: Maybe<OwnedAlbum>;
   update_producer?: Maybe<Producer>;
+  update_track?: Maybe<Track>;
   update_wishlist_album?: Maybe<WishlistAlbum>;
 };
 
@@ -223,6 +228,11 @@ export type Mutationadd_producer_to_albumArgs = {
 };
 
 
+export type Mutationadd_trackArgs = {
+  input: AddTrackInput;
+};
+
+
 export type Mutationadd_wishlist_albumArgs = {
   input: AddWishlistAlbumInput;
 };
@@ -249,6 +259,11 @@ export type Mutationdelete_owned_albumArgs = {
 
 
 export type Mutationdelete_producerArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Mutationdelete_trackArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -300,6 +315,12 @@ export type Mutationupdate_owned_albumArgs = {
 
 export type Mutationupdate_producerArgs = {
   input: UpdateProducerInput;
+};
+
+
+export type Mutationupdate_trackArgs = {
+  id: Scalars['Int']['input'];
+  input: UpdateTrackInput;
 };
 
 
@@ -385,12 +406,6 @@ export type QuerylabelsArgs = {
 
 export type Queryowned_albumArgs = {
   id: Scalars['Int']['input'];
-  options?: InputMaybe<QueryAlbumOptions>;
-};
-
-
-export type Queryowned_albumsArgs = {
-  options?: InputMaybe<QueryAlbumOptions>;
 };
 
 
@@ -407,19 +422,6 @@ export type QueryproducersArgs = {
 
 export type Querywishlist_albumArgs = {
   id: Scalars['Int']['input'];
-  options?: InputMaybe<QueryAlbumOptions>;
-};
-
-
-export type Querywishlist_albumsArgs = {
-  options?: InputMaybe<QueryAlbumOptions>;
-};
-
-export type QueryAlbumOptions = {
-  with_artists?: InputMaybe<Scalars['Boolean']['input']>;
-  with_genres?: InputMaybe<Scalars['Boolean']['input']>;
-  with_labels?: InputMaybe<Scalars['Boolean']['input']>;
-  with_producers?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type QueryArtistOptions = {
@@ -440,8 +442,11 @@ export type QueryProducerOptions = {
 
 export type Track = {
   __typename?: 'Track';
+  album_id: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
   length?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
+  position: Scalars['Int']['output'];
   side?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -486,8 +491,10 @@ export type UpdateProducerInput = {
 };
 
 export type UpdateTrackInput = {
+  album_id?: InputMaybe<Scalars['Int']['input']>;
   length?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  position?: InputMaybe<Scalars['Int']['input']>;
   side?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -605,7 +612,6 @@ export type ResolversTypes = {
   ProducerAlbumRelation: ResolverTypeWrapper<ProducerAlbumRelation>;
   Query: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  QueryAlbumOptions: QueryAlbumOptions;
   QueryArtistOptions: QueryArtistOptions;
   QueryGenreOptions: QueryGenreOptions;
   QueryLabelOptions: QueryLabelOptions;
@@ -651,7 +657,6 @@ export type ResolversParentTypes = {
   ProducerAlbumRelation: ProducerAlbumRelation;
   Query: {};
   Boolean: Scalars['Boolean']['output'];
-  QueryAlbumOptions: QueryAlbumOptions;
   QueryArtistOptions: QueryArtistOptions;
   QueryGenreOptions: QueryGenreOptions;
   QueryLabelOptions: QueryLabelOptions;
@@ -738,12 +743,14 @@ export type MutationResolvers<ContextType = APIContext, ParentType extends Resol
   add_owned_album?: Resolver<ResolversTypes['OwnedAlbum'], ParentType, ContextType, RequireFields<Mutationadd_owned_albumArgs, 'input'>>;
   add_producer?: Resolver<ResolversTypes['Producer'], ParentType, ContextType, RequireFields<Mutationadd_producerArgs, 'input'>>;
   add_producer_to_album?: Resolver<Maybe<ResolversTypes['ProducerAlbumRelation']>, ParentType, ContextType, RequireFields<Mutationadd_producer_to_albumArgs, 'input'>>;
+  add_track?: Resolver<ResolversTypes['Track'], ParentType, ContextType, RequireFields<Mutationadd_trackArgs, 'input'>>;
   add_wishlist_album?: Resolver<ResolversTypes['WishlistAlbum'], ParentType, ContextType, RequireFields<Mutationadd_wishlist_albumArgs, 'input'>>;
   delete_artist?: Resolver<Maybe<ResolversTypes['Artist']>, ParentType, ContextType, RequireFields<Mutationdelete_artistArgs, 'id'>>;
   delete_genre?: Resolver<Maybe<ResolversTypes['Genre']>, ParentType, ContextType, RequireFields<Mutationdelete_genreArgs, 'id'>>;
   delete_label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<Mutationdelete_labelArgs, 'id'>>;
   delete_owned_album?: Resolver<Maybe<ResolversTypes['OwnedAlbum']>, ParentType, ContextType, RequireFields<Mutationdelete_owned_albumArgs, 'id'>>;
   delete_producer?: Resolver<Maybe<ResolversTypes['Producer']>, ParentType, ContextType, RequireFields<Mutationdelete_producerArgs, 'id'>>;
+  delete_track?: Resolver<Maybe<ResolversTypes['Track']>, ParentType, ContextType, RequireFields<Mutationdelete_trackArgs, 'id'>>;
   delete_wishlist_album?: Resolver<Maybe<ResolversTypes['WishlistAlbum']>, ParentType, ContextType, RequireFields<Mutationdelete_wishlist_albumArgs, 'id'>>;
   remove_artist_from_album?: Resolver<Maybe<ResolversTypes['ArtistAlbumRelation']>, ParentType, ContextType, RequireFields<Mutationremove_artist_from_albumArgs, 'input'>>;
   remove_genre_from_album?: Resolver<Maybe<ResolversTypes['GenreAlbumRelation']>, ParentType, ContextType, RequireFields<Mutationremove_genre_from_albumArgs, 'input'>>;
@@ -754,6 +761,7 @@ export type MutationResolvers<ContextType = APIContext, ParentType extends Resol
   update_label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<Mutationupdate_labelArgs, 'input'>>;
   update_owned_album?: Resolver<Maybe<ResolversTypes['OwnedAlbum']>, ParentType, ContextType, RequireFields<Mutationupdate_owned_albumArgs, 'input'>>;
   update_producer?: Resolver<Maybe<ResolversTypes['Producer']>, ParentType, ContextType, RequireFields<Mutationupdate_producerArgs, 'input'>>;
+  update_track?: Resolver<Maybe<ResolversTypes['Track']>, ParentType, ContextType, RequireFields<Mutationupdate_trackArgs, 'id' | 'input'>>;
   update_wishlist_album?: Resolver<Maybe<ResolversTypes['WishlistAlbum']>, ParentType, ContextType, RequireFields<Mutationupdate_wishlist_albumArgs, 'input'>>;
 };
 
@@ -786,16 +794,19 @@ export type QueryResolvers<ContextType = APIContext, ParentType extends Resolver
   label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<QuerylabelArgs, 'id'>>;
   labels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType, Partial<QuerylabelsArgs>>;
   owned_album?: Resolver<Maybe<ResolversTypes['OwnedAlbum']>, ParentType, ContextType, RequireFields<Queryowned_albumArgs, 'id'>>;
-  owned_albums?: Resolver<Array<ResolversTypes['OwnedAlbum']>, ParentType, ContextType, Partial<Queryowned_albumsArgs>>;
+  owned_albums?: Resolver<Array<ResolversTypes['OwnedAlbum']>, ParentType, ContextType>;
   producer?: Resolver<Maybe<ResolversTypes['Producer']>, ParentType, ContextType, RequireFields<QueryproducerArgs, 'id'>>;
   producers?: Resolver<Array<ResolversTypes['Producer']>, ParentType, ContextType, Partial<QueryproducersArgs>>;
   wishlist_album?: Resolver<Maybe<ResolversTypes['WishlistAlbum']>, ParentType, ContextType, RequireFields<Querywishlist_albumArgs, 'id'>>;
-  wishlist_albums?: Resolver<Array<ResolversTypes['WishlistAlbum']>, ParentType, ContextType, Partial<Querywishlist_albumsArgs>>;
+  wishlist_albums?: Resolver<Array<ResolversTypes['WishlistAlbum']>, ParentType, ContextType>;
 };
 
 export type TrackResolvers<ContextType = APIContext, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
+  album_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   length?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   side?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

@@ -6,7 +6,7 @@ export const add_label_to_album: NonNullable<MutationResolvers['add_label_to_alb
     ctx
 ) => {
     const results = await ctx.db.insert<LabelAlbumInput, LabelAlbumRelation>(
-        "lables_albums",
+        "labels_albums",
         arg.input
     )
 

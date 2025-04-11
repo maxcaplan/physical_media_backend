@@ -1,15 +1,8 @@
 extend type Query {
-  wishlist_album(id: Int!, options: QueryAlbumOptions): WishlistAlbum
-  wishlist_albums(options: QueryAlbumOptions): [WishlistAlbum!]!
-  owned_album(id: Int!, options: QueryAlbumOptions): OwnedAlbum
-  owned_albums(options: QueryAlbumOptions): [OwnedAlbum!]!
-}
-
-input QueryAlbumOptions {
-  with_artists: Boolean
-  with_genres: Boolean
-  with_producers: Boolean
-  with_labels: Boolean
+  wishlist_album(id: Int!): WishlistAlbum
+  wishlist_albums: [WishlistAlbum!]!
+  owned_album(id: Int!): OwnedAlbum
+  owned_albums: [OwnedAlbum!]!
 }
 
 extend type Mutation {
@@ -32,6 +25,12 @@ extend type Mutation {
   ): OwnedAlbum
 
   delete_owned_album(id: Int!): OwnedAlbum
+
+  add_track(input: AddTrackInput!): Track!
+
+  update_track(id: Int!, input: UpdateTrackInput!): Track
+
+  delete_track(id: Int!): Track
 }
 
 input AddAlbumInput {
@@ -86,12 +85,16 @@ input AddTrackInput {
   name: String!
   length: Int
   side: Int
+  album_id: Int!
+  position: Int!
 }
 
 input UpdateTrackInput {
   name: String
   length: Int
   side: Int
+  album_id: Int
+  position: Int
 }
 
 type WishlistAlbum {
@@ -121,9 +124,12 @@ type Album {
 }
 
 type Track {
+  id: Int!
   name: String!
   length: Int
   side: Int # Must be positive. Maps to alpha (0 = A)
+  album_id: Int!
+  position: Int!
 }
 
 enum Condition {

@@ -34,8 +34,10 @@ input AddProducerInput {
 }
 
 input AddTrackInput {
+  album_id: Int!
   length: Int
   name: String!
+  position: Int!
   side: Int
 }
 
@@ -130,12 +132,14 @@ type Mutation {
   add_owned_album(input: AddOwnedAlbumInput!): OwnedAlbum!
   add_producer(input: AddProducerInput!): Producer!
   add_producer_to_album(input: ProducerAlbumInput!): ProducerAlbumRelation
+  add_track(input: AddTrackInput!): Track!
   add_wishlist_album(input: AddWishlistAlbumInput!): WishlistAlbum!
   delete_artist(id: Int!): Artist
   delete_genre(id: Int!): Genre
   delete_label(id: Int!): Label
   delete_owned_album(id: Int!): OwnedAlbum
   delete_producer(id: Int!): Producer
+  delete_track(id: Int!): Track
   delete_wishlist_album(id: Int!): WishlistAlbum
   remove_artist_from_album(input: ArtistAlbumInput!): ArtistAlbumRelation
   remove_genre_from_album(input: GenreAlbumInput!): GenreAlbumRelation
@@ -146,6 +150,7 @@ type Mutation {
   update_label(input: UpdateLabelInput!): Label
   update_owned_album(input: UpdateOwnedAlbumInput!): OwnedAlbum
   update_producer(input: UpdateProducerInput!): Producer
+  update_track(id: Int!, input: UpdateTrackInput!): Track
   update_wishlist_album(input: UpdateWishlistAlbumInput!): WishlistAlbum
 }
 
@@ -179,19 +184,12 @@ type Query {
   genres(options: QueryGenreOptions): [Genre!]!
   label(id: Int!, options: QueryLabelOptions): Label
   labels(options: QueryLabelOptions): [Label!]!
-  owned_album(id: Int!, options: QueryAlbumOptions): OwnedAlbum
-  owned_albums(options: QueryAlbumOptions): [OwnedAlbum!]!
+  owned_album(id: Int!): OwnedAlbum
+  owned_albums: [OwnedAlbum!]!
   producer(id: Int!, options: QueryProducerOptions): Producer
   producers(options: QueryProducerOptions): [Producer!]!
-  wishlist_album(id: Int!, options: QueryAlbumOptions): WishlistAlbum
-  wishlist_albums(options: QueryAlbumOptions): [WishlistAlbum!]!
-}
-
-input QueryAlbumOptions {
-  with_artists: Boolean
-  with_genres: Boolean
-  with_labels: Boolean
-  with_producers: Boolean
+  wishlist_album(id: Int!): WishlistAlbum
+  wishlist_albums: [WishlistAlbum!]!
 }
 
 input QueryArtistOptions {
@@ -211,8 +209,11 @@ input QueryProducerOptions {
 }
 
 type Track {
+  album_id: Int!
+  id: Int!
   length: Int
   name: String!
+  position: Int!
   side: Int
 }
 
@@ -257,8 +258,10 @@ input UpdateProducerInput {
 }
 
 input UpdateTrackInput {
+  album_id: Int
   length: Int
   name: String
+  position: Int
   side: Int
 }
 

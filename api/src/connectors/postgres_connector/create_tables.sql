@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS producers (
 );
 
 -- Albums table
-CREATE TABLE IF NOT EXISTS albums (
+CREATE TABLE IF NOT EXISTS albums_t (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(256) NOT NULL,
 	description TEXT,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS owned_albums_t (
 	condition condition,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id) 
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS wishlist_albums_t (
 	ranking INTEGER,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id) 
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -73,9 +73,10 @@ CREATE TABLE IF NOT EXISTS tracks (
 	length INTEGER,
 	side SMALLINT,
 	album_id INT NOT NULL,
+	position INT NOT NULL,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id) 
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS artists_albums (
 		ON DELETE CASCADE,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id)
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS genres_albums (
 		ON DELETE CASCADE,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id)
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -120,7 +121,7 @@ CREATE TABLE IF NOT EXISTS labels_albums (
 		ON DELETE CASCADE,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id)
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
@@ -135,33 +136,306 @@ CREATE TABLE IF NOT EXISTS producers_albums (
 		ON DELETE CASCADE,
 	CONSTRAINT fk_album
 		FOREIGN KEY(album_id)
-		REFERENCES albums(id)
+		REFERENCES albums_t(id)
 		ON DELETE CASCADE
 );
 
 -- Create views
+DROP VIEW IF EXISTS albums CASCADE;
+
+CREATE VIEW albums AS
+SELECT
+	a_t.*,
+
+	COALESCE((
+		SELECT json_agg(row_to_json(a))
+		FROM (
+			SELECT a.*
+			FROM artists AS a
+			JOIN artists_albums AS aa ON a.id = aa.artist_id
+			WHERE aa.album_id = a_t.id
+		) a
+	), '[]') AS artists,
+
+	COALESCE((
+		SELECT json_agg(row_to_json(p))
+		FROM (
+			SELECT p.*
+			FROM producers AS p
+			JOIN producers_albums AS pa ON p.id = pa.producer_id
+			WHERE pa.album_id = a_t.id
+		) p
+	), '[]') AS producers,
+
+	COALESCE((
+		SELECT json_agg(row_to_json(g))
+		FROM (
+			SELECT g.*
+			FROM genres AS g
+			JOIN genres_albums AS ga ON g.id = ga.genre_id
+			WHERE ga.album_id = a_t.id
+		) g
+	), '[]') AS genres,
+
+	COALESCE((
+		SELECT json_agg(row_to_json(l))
+		FROM (
+			SELECT l.*
+			FROM labels AS l
+			JOIN labels_albums AS la ON l.id = la.label_id
+			WHERE la.album_id = a_t.id
+		) l
+	), '[]') AS labels,
+
+	COALESCE((
+		SELECT json_agg(row_to_json(t))
+		FROM (
+			SELECT t.*
+			FROM tracks AS t
+			WHERE t.album_id = a_t.id
+		) t
+	), '[]') AS tracks
+FROM
+	albums_t AS a_t;
+
 -- Owned Album view
 DROP VIEW IF EXISTS owned_albums;
 CREATE VIEW owned_albums AS
 SELECT
-	owned_albums_t.*,
+	oa_t.*,
 	row_to_json(albums) AS album
 FROM
-	owned_albums_t
-	INNER JOIN albums ON albums.id = owned_albums_t.album_id;
+	owned_albums_t AS oa_t
+	INNER JOIN albums ON albums.id = oa_t.album_id;
 
 -- Wishlist Album view
 DROP VIEW IF EXISTS wishlist_albums;
 CREATE VIEW wishlist_albums AS
 SELECT
-	wishlist_albums_t.*,
+	wa_t.*,
 	row_to_json(albums) AS album
 FROM
-	wishlist_albums_t
-	INNER JOIN albums ON albums.id = wishlist_albums_t.album_id;
+	wishlist_albums_t AS wa_t
+	INNER JOIN albums ON albums.id = wa_t.album_id;
 
 -- Create triggers
+-- Albums instead of trigger
+CREATE OR REPLACE FUNCTION trg_albums_upsert()
+RETURNS trigger AS $$
+DECLARE
+	result RECORD;
+BEGIN
+	-- INSERT
+	IF TG_OP = 'INSERT' THEN
+		-- Insert into base table
+		INSERT INTO albums_t (name, description, release_date, length, rating)
+		VALUES (NEW.name, NEW.description, NEW.release_date, NEW.length, NEW.rating);
 
+		-- Return full view row
+		SELECT
+			a_t.*,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(a))
+				FROM (
+					SELECT a.*
+					FROM artists AS a
+					JOIN artists_albums AS aa ON a.id = aa.artist_id
+					WHERE aa.album_id = a_t.id
+				) a
+			), '[]') AS artists,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(p))
+				FROM (
+					SELECT p.*
+					FROM producers AS p
+					JOIN producers_albums AS pa ON p.id = pa.producer_id
+					WHERE pa.album_id = a_t.id
+				) p
+			), '[]') AS producers,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(g))
+				FROM (
+					SELECT g.*
+					FROM genres AS g
+					JOIN genres_albums AS ga ON g.id = ga.genre_id
+					WHERE ga.album_id = a_t.id
+				) g
+			), '[]') AS genres,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(l))
+				FROM (
+					SELECT l.*
+					FROM labels AS l
+					JOIN labels_albums AS la ON l.id = la.label_id
+					WHERE la.album_id = a_t.id
+				) l
+			), '[]') AS labels,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(t))
+				FROM (
+					SELECT t.*
+					FROM tracks AS t
+					WHERE t.album_id = a_t.id
+				) t
+			), '[]') AS tracks
+		INTO result
+		FROM
+			albums_t AS a_t
+		ORDER BY a_t.id DESC  -- assumes latest inserted has highest ID
+		LIMIT 1;
+
+		RETURN result;
+
+	-- UPDATE
+	ELSIF TG_OP = 'UPDATE' THEN
+		UPDATE albums_t
+		SET
+			name = NEW.name, 
+			description = NEW.description, 
+			release_date = NEW.release_date, 
+			length = NEW.length, 
+			rating = NEW.rating
+		WHERE id = OLD.id;
+
+		-- Return full view row
+		SELECT
+			a_t.*,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(a))
+				FROM (
+					SELECT a.*
+					FROM artists AS a
+					JOIN artists_albums AS aa ON a.id = aa.artist_id
+					WHERE aa.album_id = a_t.id
+				) a
+			), '[]') AS artists,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(p))
+				FROM (
+					SELECT p.*
+					FROM producers AS p
+					JOIN producers_albums AS pa ON p.id = pa.producer_id
+					WHERE pa.album_id = a_t.id
+				) p
+			), '[]') AS producers,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(g))
+				FROM (
+					SELECT g.*
+					FROM genres AS g
+					JOIN genres_albums AS ga ON g.id = ga.genre_id
+					WHERE ga.album_id = a_t.id
+				) g
+			), '[]') AS genres,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(l))
+				FROM (
+					SELECT l.*
+					FROM labels AS l
+					JOIN labels_albums AS la ON l.id = la.label_id
+					WHERE la.album_id = a_t.id
+				) l
+			), '[]') AS labels,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(t))
+				FROM (
+					SELECT t.*
+					FROM tracks AS t
+					WHERE t.album_id = a_t.id
+				) t
+			), '[]') AS tracks
+		INTO result
+		FROM
+			albums_t AS a_t
+		WHERE a_t.id = OLD.id;
+
+		RETURN result;
+	
+	-- DELETE
+	ELSIF TG_OP = 'DELETE' THEN
+		-- Return full view row
+		SELECT
+			a_t.*,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(a))
+				FROM (
+					SELECT a.*
+					FROM artists AS a
+					JOIN artists_albums AS aa ON a.id = aa.artist_id
+					WHERE aa.album_id = a_t.id
+				) a
+			), '[]') AS artists,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(p))
+				FROM (
+					SELECT p.*
+					FROM producers AS p
+					JOIN producers_albums AS pa ON p.id = pa.producer_id
+					WHERE pa.album_id = a_t.id
+				) p
+			), '[]') AS producers,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(g))
+				FROM (
+					SELECT g.*
+					FROM genres AS g
+					JOIN genres_albums AS ga ON g.id = ga.genre_id
+					WHERE ga.album_id = a_t.id
+				) g
+			), '[]') AS genres,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(l))
+				FROM (
+					SELECT l.*
+					FROM labels AS l
+					JOIN labels_albums AS la ON l.id = la.label_id
+					WHERE la.album_id = a_t.id
+				) l
+			), '[]') AS labels,
+
+			COALESCE((
+				SELECT json_agg(row_to_json(t))
+				FROM (
+					SELECT t.*
+					FROM tracks AS t
+					WHERE t.album_id = a_t.id
+				) t
+			), '[]') AS tracks
+		INTO result
+		FROM
+			albums_t AS a_t
+		WHERE a_t.id = OLD.id;
+		
+		DELETE FROM albums_t
+		WHERE id = OLD.id;
+
+		RETURN result;
+	END IF;
+
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_albums_modification
+INSTEAD OF INSERT OR UPDATE OR DELETE ON albums
+FOR EACH ROW
+EXECUTE FUNCTION trg_albums_upsert();
+
+-- Owned albums instead of trigger
 CREATE OR REPLACE FUNCTION trg_owned_albums_upsert()
 RETURNS trigger AS $$
 DECLARE
@@ -232,6 +506,7 @@ INSTEAD OF INSERT OR UPDATE OR DELETE ON owned_albums
 FOR EACH ROW
 EXECUTE FUNCTION trg_owned_albums_upsert();
 
+-- Wishlist albums instead of trigger
 CREATE OR REPLACE FUNCTION trg_wishlist_albums_upsert()
 RETURNS trigger AS $$
 DECLARE
