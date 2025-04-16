@@ -4,7 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/index.ts"
+    "start": "if [ \"$MODE\" = \"development\" ]; then bun run dev; else bun run prod; fi",
+    "prod": "bun index.ts",
+    "dev": "bun --watch index.ts",
+    "build": "bun build --compile --minify --sourcemap --target=bun-linux-x64 index.ts --outfile ./dist/api",
+    "serve": "./dist/api"
   },
   "devDependencies": {
     "@eddeee888/gcg-typescript-resolver-files": "^0.12.0",

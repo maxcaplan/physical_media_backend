@@ -1,11 +1,11 @@
 import { createSchema, createYoga } from 'graphql-yoga'
 
-import { typeDefs } from './schema/typeDefs.generated'
-import { resolvers } from './schema/resolvers.generated'
+import { typeDefs } from './src/schema/typeDefs.generated'
+import { resolvers } from './src/schema/resolvers.generated'
 
-import type { APIContext } from './schema/context_type'
+import type { APIContext } from './src/schema/context_type'
 
-import { PostgresConnector } from './connectors/postgres_connector'
+import { PostgresConnector } from './src/connectors/postgres_connector'
 
 const connector = new PostgresConnector({})
 await connector.connect()

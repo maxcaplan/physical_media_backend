@@ -1,0 +1,4 @@
+CREATE USER api WITH PASSWORD 'okcomputer';
+
+GRANT USAGE ON SCHEMA public TO api;
+GRANT CREATE ON SCHEMA public TO api;
